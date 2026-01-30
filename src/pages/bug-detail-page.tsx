@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth-context'
+import { useImagePreview } from '@/hooks/use-image-preview'
 import {
   useGetBugById,
   useGetDevelopers,
@@ -41,6 +42,7 @@ export function BugDetailPage() {
   const [error, setError] = useState<string | null>(null)
 
   const { data: bug, isLoading, error: fetchError, refetch } = useGetBugById(bugId)
+  const { imagePreviews, isImageFile, loadingImages } = useImagePreview(bug?.attachments)
 
   const isDeveloper = user?.role === 'Developer'
   const isReporter = bug?.reporterId === user?.id
@@ -281,33 +283,50 @@ export function BugDetailPage() {
               {bug.attachments.length === 0 ? (
                 <p className="text-muted-foreground text-center py-4">No attachments</p>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-4">
                   {bug.attachments.map((attachment) => (
                     <div
                       key={attachment.id}
-                      className="flex items-center justify-between p-3 rounded-lg border"
+                      className="p-3 rounded-lg border"
                     >
-                      <div>
-                        <p className="font-medium">{attachment.fileName}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {(attachment.fileSize / 1024).toFixed(1)} KB
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDownload(attachment.id, attachment.fileName)}
-                        >
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteAttachment(attachment.id)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
+                      {isImageFile(attachment.fileName) && (
+                        <div className="mb-3 flex justify-center bg-muted/30 rounded-lg p-2">
+                          {loadingImages[attachment.id] ? (
+                            <div className="h-48 flex items-center justify-center">
+                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                            </div>
+                          ) : imagePreviews[attachment.id] ? (
+                            <img
+                              src={imagePreviews[attachment.id]}
+                              alt={attachment.fileName}
+                              className="max-h-64 max-w-full object-contain rounded"
+                            />
+                          ) : null}
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">{attachment.fileName}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {(attachment.fileSize / 1024).toFixed(1)} KB
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDownload(attachment.id, attachment.fileName)}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteAttachment(attachment.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
