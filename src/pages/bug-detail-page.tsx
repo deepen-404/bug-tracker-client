@@ -95,8 +95,8 @@ export function BugDetailPage() {
         fileInputRef.current.value = ''
       }
     },
-    onError: () => {
-      setError('Failed to upload file')
+    onError: (err) => {
+      setError(err.response?.data?.message || 'Failed to upload file')
     },
   })
 
