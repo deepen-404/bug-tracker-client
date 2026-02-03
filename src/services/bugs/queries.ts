@@ -44,15 +44,6 @@ export function useGetMyBugs(
       const response = await bugsApi.getMyBugs(params)
       return response
     },
-    placeholderData: {
-      items: [],
-      pageNumber: 1,
-      pageSize: 10,
-      totalCount: 0,
-      totalPages: 0,
-      hasPreviousPage: false,
-      hasNextPage: false,
-    },
     ...options,
   })
 }
@@ -67,15 +58,6 @@ export function useGetAssignedBugs(
       const response = await bugsApi.getAssignedBugs(params)
       return response
     },
-    placeholderData: {
-      items: [],
-      pageNumber: 1,
-      pageSize: 10,
-      totalCount: 0,
-      totalPages: 0,
-      hasPreviousPage: false,
-      hasNextPage: false,
-    },
     ...options,
   })
 }
@@ -89,15 +71,6 @@ export function useGetUnassignedBugs(
     queryFn: async () => {
       const response = await bugsApi.getUnassignedBugs(params.search, params.pagination)
       return response
-    },
-    placeholderData: {
-      items: [],
-      pageNumber: 1,
-      pageSize: 10,
-      totalCount: 0,
-      totalPages: 0,
-      hasPreviousPage: false,
-      hasNextPage: false,
     },
     ...options,
   })
@@ -117,15 +90,6 @@ export function useSearchBugs(
         params.pagination
       )
       return response
-    },
-    placeholderData: {
-      items: [],
-      pageNumber: 1,
-      pageSize: 10,
-      totalCount: 0,
-      totalPages: 0,
-      hasPreviousPage: false,
-      hasNextPage: false,
     },
     ...options,
   })
